@@ -29,7 +29,7 @@ model = YOLO("best.pt")  # Your custom-trained model
 # Define class names
 classNames = [
     'Hardhat', 'Mask', 'NO-Hardhat', 'NO-Mask', 'NO-Safety Vest',
-    'Person', 'Safety Cone', 'Safety Vest', 'machinery', 'vehicle'
+    'Person', 'Safety Cone', 'Safety Vest', 'machinery', 'vehicle', 'Gloves'
 ]
 
 # Initialize FPS variables
@@ -53,6 +53,13 @@ while True:
             x1, y1, x2, y2 = box.xyxy[0]
             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
             w, h = x2 - x1, y2 - y1
+
+            cls = int(box.cls[0])
+            if classNames[cls] in ['NO-Hardhat', 'NO-Mask', 'NO-Safety Vest']:
+               color = (0, 0, 255)  # Red
+            else:
+               color = (0, 255, 0)  # Green
+
 
             # Draw rectangle
             cvzone.cornerRect(img, (x1, y1, w, h))
