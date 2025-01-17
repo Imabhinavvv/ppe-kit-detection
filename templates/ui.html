@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>YOLOv8 Object Detection</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        header.top {
+            background-color: #000;
+            width: 100%;
+        }
+
+        header.second {
+            background-color: #007bff;
+            width: 100%;
+            margin-top: -10px;
+            padding: 10px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .video-container {
+            background-color: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        img {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        footer {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5em;
+            }
+
+            img {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="top">
+    <h1><strong>Object Detection using YOLOv8</strong></h1>
+</header>
+<header class="second">
+    <h1><strong>Output Video</strong></h1>
+</header>
+
+<div class="container">
+    <div class="video-container">
+        <img src="{{ url_for('webapp') }}" alt="Object Detection Output">
+    </div>
+</div>
+
+<footer>
+    &copy; 2024 Object Detection Project. All rights reserved.
+</footer>
+</body>
+</html>
