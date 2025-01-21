@@ -54,7 +54,7 @@ def ppe_detection(file):
 
 
 if __name__ == "__main__":
-    #file = r"F:\Computer_vision\PPE_detection_YOLO\Videos\ppe-1.mp4"
-    file = r"F:\Computer_vision\PPE_detection_YOLO\Videos\ppe-2.mp4"
+    #file = r"E:\\downloads\\INFOSYS PROJECT\\PPE_detection_Kit-main\\Videos\\ppe-1.mp4"
+    file = r"E:\\downloads\\INFOSYS PROJECT\\PPE_detection_Kit-main\\Videos\\ppe-3.mp4"
     ppe_detection(file)
 

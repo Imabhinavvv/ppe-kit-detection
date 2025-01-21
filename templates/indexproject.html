@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Object Detection - YOLOv8</title>
+    <title>PPE Safety Kit Object Detection</title>
     <style>
         /* General Reset */
         * {
@@ -17,7 +17,7 @@
             font-family: Helvetica, sans-serif;
             background-color: #f4f4f4;
             color: #333;
-            line-height: 1.6;
+            line-height: 1.8;
         }
 
         header {
@@ -53,10 +53,11 @@
         nav ul li a {
             text-decoration: none;
             color: white;
-            padding: 10px 20px;
+            padding: 14px 22px;
             background-color: gray;
             border-radius: 10px;
             transition: background-color 0.3s;
+            font-size: 18px;
         }
 
         nav ul li a:hover {
@@ -65,38 +66,39 @@
 
         .details {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             background-color: gray;
             color: black;
-            font-size: 24px;
-            margin: 20px 0;
+            font-size: 36px; /* Increased text size */
+            margin: 30px 0;
         }
 
         .features {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 20px;
-            margin: 20px auto;
-            padding: 20px;
+            gap: 40px;
+            margin: 30px auto;
+            padding: 30px;
         }
 
         .features figure {
             text-align: center;
-            max-width: 400px; /* Increased width for larger images */
+            max-width: 500px;
         }
 
         .features figure img {
             width: 100%;
             border-radius: 10%;
+            max-width: 600px;
         }
 
         .main {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
-            margin: 20px;
-            gap: 20px;
+            margin: 30px;
+            gap: 30px;
         }
 
         .subpart1 {
@@ -106,40 +108,45 @@
         }
 
         .subpart1 h1, .subpart1 h4 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #555;
+            font-size: 48px; /* Increased heading size */
         }
 
         .subpart1 p {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 22px; /* Increased text size */
         }
 
-        .overview-container, .dataset-container {
+        .overview-container, .dataset-container, .features-box, .how-it-works-box, .benefits-box {
             background-color: #f8f9fa;
-            padding: 15px 20px;
+            padding: 25px; /* Increased padding for better readability */
             border: 1px solid #ddd;
             border-radius: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
-        .overview-container ul, .dataset-container ul {
-            margin-top: 10px;
-            padding-left: 20px;
+        .overview-container ul, .dataset-container ul, .how-it-works-box ul, .benefits-box ul {
+            margin-top: 15px;
+            padding-left: 30px;
         }
 
-        .overview-container ul li, .dataset-container ul li {
-            line-height: 1.8;
+        .overview-container ul li, .dataset-container ul li, .how-it-works-box ul li, .benefits-box ul li {
+            line-height: 2;
+            font-size: 20px; /* Increased text size */
         }
 
-        .overview-container strong, .dataset-container strong {
+        .overview-container strong, .dataset-container strong, .how-it-works-box strong, .benefits-box strong {
             color: #333;
             font-weight: bold;
+            font-size: 24px; /* Increased text size */
         }
 
-        .overview-container p, .dataset-container p {
-            margin-bottom: 10px;
+        .overview-container p, .dataset-container p, .how-it-works-box p, .benefits-box p {
+            margin-bottom: 15px;
             color: #555;
-            line-height: 1.6;
+            line-height: 1.8;
+            font-size: 22px; /* Increased text size */
         }
 
         .subpart2 {
@@ -151,7 +158,7 @@
         }
 
         .subpart2 figure img {
-            width: 90%; /* Increased size for better visibility */
+            width: 95%; /* Increased size for better visibility */
             max-width: 900px;
             border-radius: 4%;
         }
@@ -160,8 +167,8 @@
             background-color: black;
             color: white;
             text-align: center;
-            padding: 10px;
-            margin-top: 20px;
+            padding: 20px;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -182,7 +189,7 @@
 
     <!-- Details Section -->
     <section class="details">
-        <h1>Sample Results</h1>
+        <h1>PPE Safety Kit Object Detection</h1>
     </section>
 
     <!-- Features Section -->
@@ -207,10 +214,8 @@
             <h1>PPE Safety Kit Object Detection</h1>
             <h4>Overview</h4>
             <div class="overview-container">
-                <p>
-                    <strong>Objective:</strong> Detect PPE (Personal Protective Equipment) using YOLO (You Only Look Once) object detection algorithm. 
-                    The system identifies items such as:
-                </p>
+                <p><strong>Objective:</strong> Detect PPE (Personal Protective Equipment) using YOLO (You Only Look Once) object detection algorithm. The system identifies various items crucial for safety in industrial environments.</p>
+                <h5>Detected Items:</h5>
                 <ul>
                     <li>Hardhat</li>
                     <li>Mask</li>
@@ -223,32 +228,59 @@
                     <li>Machinery</li>
                     <li>Vehicle</li>
                 </ul>
-                <p>
-                    <strong>Use Case:</strong> Designed for organizations and individuals to ensure workplace safety and reduce hazards effectively.
-                </p>
+                <p><strong>Use Case:</strong> Designed for workplaces requiring consistent monitoring to ensure the safety of employees and reduce hazards effectively.</p>
             </div>
 
             <h4>Dataset</h4>
             <div class="dataset-container">
-                <p>
-                    <strong>Source:</strong> Roboflow's PPE Detection dataset. <br>
-                    <strong>Details:</strong>
-                </p>
+                <p><strong>Source:</strong> Roboflow's PPE Detection dataset.</p>
+                <h5>Dataset Details:</h5>
                 <ul>
-                    <li>Training Images: 2.6k</li>
-                    <li>Validation Images: 114</li>
-                    <li>Testing Images: 82</li>
-                    <li>Image Dimensions: 640x640</li>
+                    <li><strong>Training Images:</strong> 2.6k</li>
+                    <li><strong>Validation Images:</strong> 114</li>
+                    <li><strong>Testing Images:</strong> 82</li>
+                    <li><strong>Image Dimensions:</strong> 640x640</li>
                 </ul>
-                <p>
-                    This curated dataset ensures high accuracy in detecting PPE equipment across varied environments.
-                </p>
+                <p>This curated dataset ensures high accuracy in detecting PPE equipment across varied environments, supporting the system's effectiveness in real-world applications.</p>
             </div>
+
+            <!-- Key Features Box -->
+            <h4>Key Features</h4>
+            <div class="features-box">
+                <ul>
+                    <li><strong>Real-time Detection:</strong> Detect PPE kits in real-time with high precision using live video feeds or images.</li>
+                    <li><strong>Scalability:</strong> Capable of handling large-scale deployments in multiple zones.</li>
+                    <li><strong>Robust Performance:</strong> Optimized to handle different lighting and environmental conditions.</li>
+                </ul>
+            </div>
+
+            <!-- How the System Works Box -->
+            <h4>How the System Works</h4>
+            <div class="how-it-works-box">
+                <ol>
+                    <li><strong>Input:</strong> Live video or images from the camera feed.</li>
+                    <li><strong>Detection:</strong> YOLOv8 processes the frames and detects PPE items.</li>
+                    <li><strong>Output:</strong> The system outputs analysis results, marking violations.</li>
+                    <li><strong>Alert System:</strong> Triggers alerts when PPE violations are detected.</li>
+                </ol>
+            </div>
+
+            <!-- Benefits Box -->
+            <h4>Benefits</h4>
+            <div class="benefits-box">
+                <ul>
+                    <li><strong>Enhanced Safety:</strong> Ensures workers are equipped with essential protective gear at all times.</li>
+                    <li><strong>Reduced Hazards:</strong> Minimizes workplace accidents by enforcing safety standards.</li>
+                    <li><strong>Efficient Monitoring:</strong> Automated system that reduces the need for manual inspection.</li>
+                    <li><strong>Cost-effective:</strong> Saves time and money by preventing accidents and ensuring regulatory compliance.</li>
+                </ul>
+            </div>
+
         </div>
 
         <div class="subpart2">
             <figure>
-                <img src="../static/images/10.png" alt="Sample Results">
+                <img src="../static/images/Working demo.png" alt="Sample Results">
                 <figcaption>Sample Results</figcaption>
             </figure>
         </div>
