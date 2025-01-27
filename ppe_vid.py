@@ -23,7 +23,7 @@ model = YOLO(model_path)
 
 # Define class names
 classNames = ['Hardhat', 'Mask', 'NO-Hardhat', 'NO-Mask', 'NO-Safety Vest', 'Person', 
-              'Safety Cone', 'Safety Vest', 'Machinery', 'Vehicle']
+              'Safety Cone', 'Safety Vest', 'Machinery', 'Vehicle', 'Gloves']
 
 # Initialize variables for FPS calculation
 prev_frame_time = 0
