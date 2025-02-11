@@ -5,7 +5,7 @@ import math
 import time
 
 # Load the video or camera feed
-video_path = "D:/InfosysSpringboard/PPE_detection_Kit/Videos/ppe-2.mp4"  # Change to 0 for webcam
+video_path = "D:/InfosysSpringboard/PPE_detection_Kit/Videos/ppe-1.mp4"  # Change to 0 for webcam
 cap = cv2.VideoCapture(video_path)
 
 # Check if the video/camera feed is valid
@@ -18,8 +18,9 @@ cap.set(3, 1280)  # Width
 cap.set(4, 720)   # Height
 
 # Load YOLO model
-model_path = "best.pt"  # Path to the trained model
+model_path = "yolov8s_custom.pt"  # Path to the trained model
 model = YOLO(model_path)
+model = YOLO("best.pt")
 
 # Define class names
 classNames = ['Hardhat', 'Mask', 'NO-Hardhat', 'NO-Mask', 'NO-Safety Vest', 'Person', 

@@ -25,7 +25,7 @@ if not cap.isOpened():
 
 # Load YOLO model
 model = YOLO("../Yolo-Weights/yolov8n.pt")
-model = YOLO("ppe.pt")  # Your custom-trained model
+model = YOLO("yolov8s_custom.pt")  # Your custom-trained model
 
 # Define class names
 classNames = [
