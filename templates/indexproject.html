@@ -5,290 +5,752 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>PPE Safety Kit Object Detection</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* General Reset */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
         body {
-            font-family: Helvetica, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.8;
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        header {
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
             width: 100%;
-            padding: 10px 20px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
-        header.feature-box.right {
-            background-color: black;
-            color: white;
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
         }
 
-        header.feature-box.below {
-            height: 750px;
-            background-color: blue; /* Fallback color */
-            background-image: url("../static/images/front.gif"); /* GIF background */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat; /* Prevent tiling */
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        nav ul {
+        .nav-links {
+            display: flex;
             list-style: none;
-            display: flex;
-            justify-content: flex-end;
-            padding: 0;
+            gap: 2rem;
         }
 
-        nav ul li {
-            margin: 0 10px;
-        }
-
-        nav ul li a {
+        .nav-links a {
             text-decoration: none;
-            color: white;
-            padding: 14px 22px;
-            background-color: gray;
-            border-radius: 10px;
-            transition: background-color 0.3s;
-            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
-        nav ul li a:hover {
-            background-color: red;
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
         }
 
-        .details {
-            text-align: center;
-            padding: 30px;
-            background-color: gray;
-            color: black;
-            font-size: 36px; /* Increased text size */
-            margin: 30px 0;
-        }
-
-        .features {
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
             display: flex;
+            align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 40px;
-            margin: 30px auto;
-            padding: 30px;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+            position: relative;
+            overflow: hidden;
         }
 
-        .features figure {
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("../static/images/front.gif") center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .hero-content {
             text-align: center;
-            max-width: 500px;
+            max-width: 800px;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
         }
 
-        .features figure img {
-            width: 100%;
-            border-radius: 10%;
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
             max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .main {
+        .cta-buttons {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin: 30px;
-            gap: 30px;
-        }
-
-        .subpart1 {
-            flex: 1;
-            min-width: 300px;
-            padding: 20px;
-        }
-
-        .subpart1 h1, .subpart1 h4 {
-            margin-bottom: 15px;
-            color: #555;
-            font-size: 48px; /* Increased heading size */
-        }
-
-        .subpart1 p {
-            margin-bottom: 25px;
-            font-size: 22px; /* Increased text size */
-        }
-
-        .overview-container, .dataset-container, .features-box, .how-it-works-box, .benefits-box {
-            background-color: #f8f9fa;
-            padding: 25px; /* Increased padding for better readability */
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-
-        .overview-container ul, .dataset-container ul, .how-it-works-box ul, .benefits-box ul {
-            margin-top: 15px;
-            padding-left: 30px;
-        }
-
-        .overview-container ul li, .dataset-container ul li, .how-it-works-box ul li, .benefits-box ul li {
-            line-height: 2;
-            font-size: 20px; /* Increased text size */
-        }
-
-        .overview-container strong, .dataset-container strong, .how-it-works-box strong, .benefits-box strong {
-            color: #333;
-            font-weight: bold;
-            font-size: 24px; /* Increased text size */
-        }
-
-        .overview-container p, .dataset-container p, .how-it-works-box p, .benefits-box p {
-            margin-bottom: 15px;
-            color: #555;
-            line-height: 1.8;
-            font-size: 22px; /* Increased text size */
-        }
-
-        .subpart2 {
-            flex: 1;
-            text-align: center;
-            display: flex;
+            gap: 1rem;
             justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Features Grid */
+        .features-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-title p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Results Gallery */
+        .results-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .result-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .result-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .result-card-content {
+            padding: 1.5rem;
+        }
+
+        .result-card h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Info Sections */
+        .info-section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
             align-items: center;
         }
 
-        .subpart2 figure img {
-            width: 95%; /* Increased size for better visibility */
-            max-width: 900px;
-            border-radius: 4%;
+        .info-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
         }
 
-        footer {
-            background-color: black;
-            color: white;
+        .info-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .info-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 0.5rem;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .info-list li i {
+            color: var(--success-color);
+            font-size: 1.2rem;
+            margin-top: 0.2rem;
+        }
+
+        .info-list li div h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .info-list li div p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .info-image {
+            position: relative;
+        }
+
+        .info-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
             text-align: center;
-            padding: 20px;
-            margin-top: 30px;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Section -->
-    <header class="feature-box right">
-        <nav>
-            <ul>
-                <li><a href="/home">Home</a></li>
-                <li><a href="/FrontPage">Video/Image</a></li>
-                <li><a href="/webcam">Live Webcam</a></li>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">PPE Detection</div>
+            <ul class="nav-links">
+                <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/FrontPage"><i class="fas fa-video"></i> Video/Image</a></li>
+                <li><a href="/webcam"><i class="fas fa-camera"></i> Live Webcam</a></li>
             </ul>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
-    <!-- Banner Section -->
-    <header class="feature-box below"></header>
-
-    <!-- Details Section -->
-    <section class="details">
-        <h1>PPE Safety Kit Object Detection</h1>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features">
-        <figure>
-            <img src="../static/images/1.png" alt="YOLOv8 Results 1">
-            <figcaption>YOLOv8 Results 1</figcaption>
-        </figure>
-        <figure>
-            <img src="../static/images/2.png" alt="YOLOv8 Results 2">
-            <figcaption>YOLOv8 Results 2</figcaption>
-        </figure>
-        <figure>
-            <img src="../static/images/3.png" alt="YOLOv8 Results 3">
-            <figcaption>YOLOv8 Results 3</figcaption>
-        </figure>
-    </section>
-
-    <!-- Main Content Section -->
-    <div class="main">
-        <div class="subpart1">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in-up">
             <h1>PPE Safety Kit Object Detection</h1>
-            <h4>Overview</h4>
-            <div class="overview-container">
+            <p>Advanced AI-powered system for real-time detection of Personal Protective Equipment using state-of-the-art YOLOv8 technology</p>
+            <div class="cta-buttons">
+                <a href="/FrontPage" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Get Started
+                </a>
+                <a href="/webcam" class="btn btn-secondary">
+                    <i class="fas fa-camera"></i> Live Demo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Gallery -->
+    <section class="features-section">
+        <div class="section-title">
+            <h2>Detection Results</h2>
+            <p>See our YOLOv8 model in action with real-world detection examples</p>
+        </div>
+        <div class="results-gallery">
+            <div class="result-card">
+                <img src="../static/images/1.png" alt="YOLOv8 Results 1">
+                <div class="result-card-content">
+                    <h4>Safety Compliance Check</h4>
+                    <p>Real-time detection of hardhats, safety vests, and protective equipment</p>
+                </div>
+            </div>
+            <div class="result-card">
+                <img src="../static/images/2.png" alt="YOLOv8 Results 2">
+                <div class="result-card-content">
+                    <h4>Multi-Object Detection</h4>
+                    <p>Simultaneous identification of multiple PPE items and safety violations</p>
+                </div>
+            </div>
+            <div class="result-card">
+                <img src="../static/images/3.png" alt="YOLOv8 Results 3">
+                <div class="result-card-content">
+                    <h4>Industrial Environment</h4>
+                    <p>Effective detection in various lighting and environmental conditions</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Info Section -->
+    <section class="info-section">
+        <div class="info-grid">
+            <div class="info-content">
+                <h3>Overview</h3>
                 <p><strong>Objective:</strong> Detect PPE (Personal Protective Equipment) using YOLO (You Only Look Once) object detection algorithm. The system identifies various items crucial for safety in industrial environments.</p>
-                <h5>Detected Items:</h5>
-                <ul>
-                    <li>Hardhat</li>
-                    <li>Mask</li>
-                    <li>No-Hardhat</li>
-                    <li>No-Mask</li>
-                    <li>No-Safety Vest</li>
-                    <li>Person</li>
-                    <li>Safety Cone</li>
-                    <li>Safety Vest</li>
-                    <li>Machinery</li>
-                    <li>Vehicle</li>
-                </ul>
-                <p><strong>Use Case:</strong> Designed for workplaces requiring consistent monitoring to ensure the safety of employees and reduce hazards effectively.</p>
-            </div>
+                
+                <h4 style="margin: 2rem 0 1rem 0; color: var(--text-primary);">Detected Items:</h4>
+                <div class="features-grid" style="margin: 1rem 0;">
+                    <div class="feature-card" style="padding: 1rem;">
+                        <div class="feature-icon" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-hard-hat"></i>
+                        </div>
+                        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Safety Equipment</h3>
+                        <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style: none;">
+                            <li>• Hardhat</li>
+                            <li>• Safety Vest</li>
+                            <li>• Mask</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card" style="padding: 1rem;">
+                        <div class="feature-icon" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Violations</h3>
+                        <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style: none;">
+                            <li>• No-Hardhat</li>
+                            <li>• No-Mask</li>
+                            <li>• No-Safety Vest</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card" style="padding: 1rem;">
+                        <div class="feature-icon" style="width: 40px; height: 40px; font-size: 1rem;">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Environment</h3>
+                        <ul style="color: var(--text-secondary); font-size: 0.9rem; list-style: none;">
+                            <li>• Person</li>
+                            <li>• Machinery</li>
+                            <li>• Vehicle</li>
+                            <li>• Safety Cone</li>
+                        </ul>
+                    </div>
+                </div>
 
-            <h4>Dataset</h4>
-            <div class="dataset-container">
+                <p style="margin-top: 2rem;"><strong>Use Case:</strong> Designed for workplaces requiring consistent monitoring to ensure the safety of employees and reduce hazards effectively.</p>
+            </div>
+            <div class="info-image">
+                <img src="../static/images/Working demo.png" alt="Sample Results">
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset & Features Section -->
+    <section class="info-section" style="background: rgba(102, 126, 234, 0.05);">
+        <div class="info-grid">
+            <div class="info-image">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">2.6k</span>
+                        <div class="stat-label">Training Images</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">114</span>
+                        <div class="stat-label">Validation Images</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">82</span>
+                        <div class="stat-label">Testing Images</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">640x640</span>
+                        <div class="stat-label">Image Dimensions</div>
+                    </div>
+                </div>
+            </div>
+            <div class="info-content">
+                <h3>Dataset & Performance</h3>
                 <p><strong>Source:</strong> Roboflow's PPE Detection dataset.</p>
-                <h5>Dataset Details:</h5>
-                <ul>
-                    <li><strong>Training Images:</strong> 2.6k</li>
-                    <li><strong>Validation Images:</strong> 114</li>
-                    <li><strong>Testing Images:</strong> 82</li>
-                    <li><strong>Image Dimensions:</strong> 640x640</li>
-                </ul>
                 <p>This curated dataset ensures high accuracy in detecting PPE equipment across varied environments, supporting the system's effectiveness in real-world applications.</p>
-            </div>
 
-            <!-- Key Features Box -->
-            <h4>Key Features</h4>
-            <div class="features-box">
-                <ul>
-                    <li><strong>Real-time Detection:</strong> Detect PPE kits in real-time with high precision using live video feeds or images.</li>
-                    <li><strong>Scalability:</strong> Capable of handling large-scale deployments in multiple zones.</li>
-                    <li><strong>Robust Performance:</strong> Optimized to handle different lighting and environmental conditions.</li>
+                <ul class="info-list">
+                    <li>
+                        <i class="fas fa-bolt"></i>
+                        <div>
+                            <h4>Real-time Detection</h4>
+                            <p>Detect PPE kits in real-time with high precision using live video feeds or images</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-expand-arrows-alt"></i>
+                        <div>
+                            <h4>Scalability</h4>
+                            <p>Capable of handling large-scale deployments in multiple zones</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <h4>Robust Performance</h4>
+                            <p>Optimized to handle different lighting and environmental conditions</p>
+                        </div>
+                    </li>
                 </ul>
             </div>
+        </div>
+    </section>
 
-            <!-- How the System Works Box -->
-            <h4>How the System Works</h4>
-            <div class="how-it-works-box">
-                <ol>
-                    <li><strong>Input:</strong> Live video or images from the camera feed.</li>
-                    <li><strong>Detection:</strong> YOLOv8 processes the frames and detects PPE items.</li>
-                    <li><strong>Output:</strong> The system outputs analysis results, marking violations.</li>
-                    <li><strong>Alert System:</strong> Triggers alerts when PPE violations are detected.</li>
+    <!-- How It Works & Benefits -->
+    <section class="info-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h3>How the System Works</h3>
+                <ol style="color: var(--text-secondary); padding-left: 1.5rem;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Input:</strong> Live video or images from the camera feed</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Detection:</strong> YOLOv8 processes the frames and detects PPE items</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Output:</strong> The system outputs analysis results, marking violations</li>
+                    <li><strong>Alert System:</strong> Triggers alerts when PPE violations are detected</li>
                 </ol>
             </div>
-
-            <!-- Benefits Box -->
-            <h4>Benefits</h4>
-            <div class="benefits-box">
-                <ul>
-                    <li><strong>Enhanced Safety:</strong> Ensures workers are equipped with essential protective gear at all times.</li>
-                    <li><strong>Reduced Hazards:</strong> Minimizes workplace accidents by enforcing safety standards.</li>
-                    <li><strong>Efficient Monitoring:</strong> Automated system that reduces the need for manual inspection.</li>
-                    <li><strong>Cost-effective:</strong> Saves time and money by preventing accidents and ensuring regulatory compliance.</li>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3>Benefits</h3>
+                <ul class="info-list" style="margin: 0;">
+                    <li style="background: none; border: none; padding: 0.5rem 0;">
+                        <i class="fas fa-check" style="color: var(--success-color);"></i>
+                        <div>
+                            <h4>Enhanced Safety</h4>
+                            <p>Ensures workers are equipped with essential protective gear at all times</p>
+                        </div>
+                    </li>
+                    <li style="background: none; border: none; padding: 0.5rem 0;">
+                        <i class="fas fa-check" style="color: var(--success-color);"></i>
+                        <div>
+                            <h4>Reduced Hazards</h4>
+                            <p>Minimizes workplace accidents by enforcing safety standards</p>
+                        </div>
+                    </li>
+                    <li style="background: none; border: none; padding: 0.5rem 0;">
+                        <i class="fas fa-check" style="color: var(--success-color);"></i>
+                        <div>
+                            <h4>Cost-effective</h4>
+                            <p>Saves time and money by preventing accidents and ensuring regulatory compliance</p>
+                        </div>
+                    </li>
                 </ul>
             </div>
-
         </div>
-
-        <div class="subpart2">
-            <figure>
-                <img src="../static/images/Working demo.png" alt="Sample Results">
-                <figcaption>Sample Results</figcaption>
-            </figure>
-        </div>
-    </div>
+    </section>
 
     <!-- Footer -->
-    <footer>
-        &copy; 2024 Object Detection using YOLOv8. All rights reserved.
+    <footer class="footer">
+        <p>&copy; 2024 Object Detection using YOLOv8. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Add smooth scrolling and navbar background change on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards and info sections
+        document.querySelectorAll('.feature-card, .result-card, .info-content').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>

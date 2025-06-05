@@ -5,110 +5,847 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>YOLOv8 Object Detection</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* General Reset */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            margin: 0;
             min-height: 100vh;
-            margin: 0;
         }
 
-        header {
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Header Section */
+        .header-section {
+            padding-top: 100px;
+            padding-bottom: 2rem;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e293b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            z-index: 1;
+        }
+
+        .header-content {
             text-align: center;
-            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
         }
 
-        header.top {
-            background-color: #000;
-            width: 100%;
+        .header-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
         }
 
-        header.second {
-            background-color: #007bff;
-            width: 100%;
-            margin-top: -10px;
-            padding: 10px;
+        .header-subtitle {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.3;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.8em;
+        .header-description {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 3rem;
         }
 
+        /* Video Display Section */
+        .video-display-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-title p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Video Container */
         .video-container {
-            background-color: #000;
-            border-radius: 20px;
-            overflow: hidden;
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: 100%;
             max-width: 900px;
-            height: auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
+        }
+
+        .video-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .video-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-color: var(--primary-color);
+        }
+
+        .video-wrapper {
+            background: #000;
+            border-radius: 1rem;
+            overflow: hidden;
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;
+            min-height: 400px;
         }
 
-        img {
+        .video-wrapper img {
             width: 100%;
-            max-width: 900px;
-            border-radius: 20px;
+            height: auto;
+            max-width: 100%;
+            border-radius: 1rem;
             object-fit: cover;
+            transition: transform 0.3s ease;
         }
 
-        footer {
-            margin-top: 20px;
-            color: #aaa;
-            font-size: 0.9em;
+        .video-wrapper:hover img {
+            transform: scale(1.02);
         }
 
+        /* Status Indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            border-radius: 0.75rem;
+            color: var(--success-color);
+            font-weight: 500;
+        }
+
+        .status-indicator i {
+            font-size: 1rem;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Instructions Panel */
+        .instructions-panel {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instructions-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-accent);
+        }
+
+        .instructions-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .instructions-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .instructions-list {
+            list-style: none;
+            margin: 1rem 0 0 0;
+            padding: 0;
+        }
+
+        .instructions-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 0.5rem;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .instructions-list li i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+            min-width: 16px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Features Grid */
+        .features-section {
+            width: 100%;
+            margin-top: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--success-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.5em;
+            .nav-container {
+                padding: 1rem;
             }
 
-            img {
-                width: 100%;
+            .nav-links {
+                gap: 1rem;
             }
+
+            .nav-links a {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .header-subtitle {
+                font-size: 1.5rem;
+            }
+
+            .header-description {
+                font-size: 1rem;
+            }
+
+            .main-container {
+                padding: 2rem 1rem;
+            }
+
+            .video-container {
+                padding: 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
         }
     </style>
 </head>
 <body>
-<header class="top">
-    <h1><strong>Object Detection using YOLOv8</strong></h1>
-</header>
-<header class="second">
-    <h1><strong>Output Video</strong></h1>
-</header>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-eye"></i> YOLOv8 Detection
+            </div>
+            <ul class="nav-links">
+                <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#"><i class="fas fa-video"></i> Video</a></li>
+                <li><a href="#"><i class="fas fa-camera"></i> Live Feed</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<div class="container">
-    <div class="video-container">
-        <img src="{{ url_for('webapp') }}" alt="Object Detection Output">
+    <!-- Header Section -->
+    <section class="header-section">
+        <div class="header-content fade-in-up">
+            <h1 class="header-title">Object Detection using YOLOv8</h1>
+            <h2 class="header-subtitle">Output Video</h2>
+            <p class="header-description">Real-time AI-powered object detection with state-of-the-art YOLOv8 technology for accurate and efficient recognition</p>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Video Display Section -->
+        <section class="video-display-section fade-in-up">
+            <div class="section-title">
+                <h2>Live Detection Results</h2>
+                <p>Watch the YOLOv8 model process and detect objects in real-time</p>
+            </div>
+
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <img id="webcamFeed" src="{{ url_for('webapp') }}" alt="Object Detection Output">
+                </div>
+                <div id="statusIndicator" class="status-indicator">
+                    <div class="loading-spinner"></div>
+                    <span>Processing Live Feed</span>
+                </div>
+                
+                
+                <!-- Control Panel -->
+                <div class="control-panel">
+                    <button id="stopBtn" class="btn btn-danger">
+                        <i class="fas fa-stop"></i>
+                        Stop Live
+                    </button>
+                    <button id="startBtn" class="btn btn-success hidden">
+                        <i class="fas fa-play"></i>
+                        Start Live
+                    </button>
+                </div>
+
+                <!-- Instructions Panel -->
+                <div class="instructions-panel">
+                    <div class="instructions-title">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="instructionsTitle">Live Webcam Instructions</span>
+                    </div>
+                    <div class="instructions-content">
+                        <div id="liveInstructions">
+                            <p>The webcam is currently active and processing live video feed:</p>
+                            <ul class="instructions-list">
+                                <li>
+                                    <i class="fas fa-video"></i>
+                                    <span>Live video stream is being processed in real-time</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-bullseye"></i>
+                                    <span>Object detection is running continuously on the video feed</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-stop"></i>
+                                    <span>Click "Stop Live" button to pause the webcam feed</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Ensure proper lighting for optimal detection results</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="offInstructions" class="hidden">
+                            <p>The webcam feed has been stopped:</p>
+                            <ul class="instructions-list">
+                                <li>
+                                    <i class="fas fa-pause"></i>
+                                    <span>Live video processing is currently paused</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-play"></i>
+                                    <span>Click "Start Live" button to resume the webcam feed</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-camera"></i>
+                                    <span>The last frame will remain displayed until resumed</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-info"></i>
+                                    <span>Detection will resume automatically when restarted</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="section-title">
+                <h2>Detection Capabilities</h2>
+                <p>Advanced YOLOv8 features for comprehensive object recognition</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Real-time Processing</h3>
+                    <p>Lightning-fast object detection with minimal latency, processing multiple objects simultaneously in live video streams.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>High Accuracy</h3>
+                    <p>State-of-the-art YOLOv8 architecture delivers exceptional precision in object detection across various environments and conditions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </div>
+                    <h3>Multi-Object Detection</h3>
+                    <p>Capable of identifying and tracking multiple objects of different classes within a single frame with bounding box visualization.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Optimized Performance</h3>
+                    <p>Efficiently balanced model architecture providing optimal speed-accuracy trade-off for production-ready applications.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Robust Detection</h3>
+                    <p>Reliable performance across various lighting conditions, angles, and object scales with consistent detection quality.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Comprehensive detection metrics including confidence scores, object classifications, and spatial coordinates.</p>
+                </div>
+            </div>
+        </section>
     </div>
-</div>
 
-<footer>
-    &copy; 2024 Object Detection Project. All rights reserved.
-</footer>
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Object Detection Project. All rights reserved. | Powered by YOLOv8 Technology</p>
+    </footer>
+
+    <script>
+        // Add smooth scrolling and navbar background change on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all feature cards and sections for scroll animations
+        document.querySelectorAll('.feature-card, .video-container, .section-title').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+
+        // Webcam Control Functionality
+        let isWebcamActive = true;
+        let webcamInterval;
+
+        const webcamFeed = document.getElementById('webcamFeed');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const stopBtn = document.getElementById('stopBtn');
+        const startBtn = document.getElementById('startBtn');
+        const instructionsTitle = document.getElementById('instructionsTitle');
+        const liveInstructions = document.getElementById('liveInstructions');
+        const offInstructions = document.getElementById('offInstructions');
+
+        // Function to update status indicator
+        function updateStatus(isActive) {
+            if (isActive) {
+                statusIndicator.innerHTML = '<div class="loading-spinner"></div><span>Processing Live Feed</span>';
+                statusIndicator.style.background = 'rgba(16, 185, 129, 0.1)';
+                statusIndicator.style.borderColor = 'var(--success-color)';
+                statusIndicator.style.color = 'var(--success-color)';
+                instructionsTitle.textContent = 'Live Webcam Instructions';
+                liveInstructions.classList.remove('hidden');
+                offInstructions.classList.add('hidden');
+            } else {
+                statusIndicator.innerHTML = '<i class="fas fa-pause"></i><span>Webcam Stopped</span>';
+                statusIndicator.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusIndicator.style.borderColor = 'var(--danger-color)';
+                statusIndicator.style.color = 'var(--danger-color)';
+                instructionsTitle.textContent = 'Webcam Off Instructions';
+                liveInstructions.classList.add('hidden');
+                offInstructions.classList.remove('hidden');
+            }
+        }
+
+        // Stop webcam functionality
+        stopBtn.addEventListener('click', () => {
+            isWebcamActive = false;
+            webcamFeed.src = '';
+            stopBtn.classList.add('hidden');
+            startBtn.classList.remove('hidden');
+            updateStatus(false);
+            
+            // Add visual feedback
+            stopBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                stopBtn.style.transform = 'scale(1)';
+            }, 150);
+        });
+
+        // Start webcam functionality
+        startBtn.addEventListener('click', () => {
+            isWebcamActive = true;
+            webcamFeed.src = "{{ url_for('webapp') }}";
+            startBtn.classList.add('hidden');
+            stopBtn.classList.remove('hidden');
+            updateStatus(true);
+            
+            // Add visual feedback
+            startBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                startBtn.style.transform = 'scale(1)';
+            }, 150);
+        });
+
+        // Initial page load handling
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulate loading states
+            webcamFeed.addEventListener('load', () => {
+                if (isWebcamActive) {
+                    updateStatus(true);
+                }
+            });
+
+            webcamFeed.addEventListener('error', () => {
+                statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Connection Error</span>';
+                statusIndicator.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusIndicator.style.borderColor = 'var(--danger-color)';
+                statusIndicator.style.color = 'var(--danger-color)';
+            });
+
+            // Initialize with live state
+            updateStatus(true);
+        });
+    </script>
 </body>
 </html>

@@ -2,59 +2,77 @@ from ultralytics import YOLO
 import cv2
 import cvzone
 import math
+import os
+import sys
 
+def ppe_detection(file_path=None): 
+    # Load model with error handling
+    model_path = r"D:\IP19\PPE-KIT\ppe.pt"
+    if not os.path.exists(model_path):
+        print(f"❌ Model not found at: {model_path}")
+        sys.exit(1)
+    
+    model = YOLO(model_path)
 
+    # Video source: Webcam if no file path
+    cap = cv2.VideoCapture(0 if file_path is None else file_path)
+    if not cap.isOpened():
+        print(f"❌ Failed to open video source: {file_path or 'Webcam'}")
+        sys.exit(1)
 
-def ppe_detection(file): 
-    if file is None : 
-        cap = cv2.VideoCapture(0)  # For Webcam
-        cap.set(3, 1280)
-        cap.set(4, 720)
-    else : 
-        cap = cv2.VideoCapture(file)  # For Video
-    model = YOLO("E:\\downloads\\INFOSYS PROJECT\\PPE_detection_Kit-main\\ppe.pt")
+    cap.set(3, 1280)
+    cap.set(4, 720)
 
-    classNames = ['Hardhat', 'Mask', 'NO-Hardhat', 'NO-Mask', 'NO-Safety Vest', 'Person', 'Safety Cone',
-                'Safety Vest', 'machinery', 'vehicle']
-    myColor = (0, 0, 255)
+    classNames = ['Hardhat', 'Mask', 'NO-Hardhat', 'NO-Mask', 'NO-Safety Vest', 
+                  'Person', 'Safety Cone', 'Safety Vest', 'machinery', 'vehicle']
+
     while True:
         success, img = cap.read()
-        results = model(img, stream=True)
+        if not success:
+            print("⚠️ Failed to read frame (end of video or corrupted frame).")
+            break
+
+        try:
+            results = model(img, stream=True)
+        except Exception as e:
+            print(f"❌ Model inference error: {e}")
+            break
+
         for r in results:
             boxes = r.boxes
             for box in boxes:
-                # Bounding Box
-                x1, y1, x2, y2 = box.xyxy[0]
-                x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-                # cv2.rectangle(img,(x1,y1),(x2,y2),(255,0,255),3)
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
                 w, h = x2 - x1, y2 - y1
-                # cvzone.cornerRect(img, (x1, y1, w, h))
 
-                # Confidence
-                conf = math.ceil((box.conf[0] * 100)) / 100
-                # Class Name
+                conf = float(box.conf[0])
                 cls = int(box.cls[0])
-                currentClass = classNames[cls]
-                print(currentClass)
-                if conf>0.5:
-                    if currentClass =='NO-Hardhat' or currentClass =='NO-Safety Vest' or currentClass == "NO-Mask":
-                        myColor = (0, 0,255) # blue 
-                    elif currentClass =='Hardhat' or currentClass =='Safety Vest' or currentClass == "Mask":
-                        myColor =(0,255,0) # green
-                    else:
-                        myColor = (255, 0, 0) # red 
+                currentClass = classNames[cls] if cls < len(classNames) else "Unknown"
 
-                    cvzone.putTextRect(img, f'{classNames[cls]} {conf}',
-                                    (max(0, x1), max(35, y1)), scale=1, thickness=1,colorB=myColor,
-                                    colorT=(255,255,255),colorR=myColor, offset=5)
+                if conf > 0.5:
+                    # Color logic
+                    if "NO-" in currentClass:
+                        myColor = (0, 0, 255)  # Red for missing equipment
+                    elif currentClass in ['Hardhat', 'Safety Vest', 'Mask']:
+                        myColor = (0, 255, 0)  # Green for safety equipment
+                    else:
+                        myColor = (255, 0, 0)  # Blue for other objects
+
+                    # Drawing box and label
+                    label = f'{currentClass} {conf:.2f}'
+                    cvzone.putTextRect(img, label, (max(0, x1), max(35, y1)), scale=1, thickness=1,
+                                       colorB=myColor, colorT=(255, 255, 255), colorR=myColor, offset=5)
                     cv2.rectangle(img, (x1, y1), (x2, y2), myColor, 3)
 
-        cv2.imshow("Image", img)
-        cv2.waitKey(1)
+        cv2.imshow("PPE Detection", img)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            print("✅ Exit requested by user.")
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
-    #file = r"E:\\downloads\\INFOSYS PROJECT\\PPE_detection_Kit-main\\Videos\\ppe-1.mp4"
-    file = r"E:\\downloads\\INFOSYS PROJECT\\PPE_detection_Kit-main\\Videos\\ppe-3.mp4"
-    ppe_detection(file)
-
+    # Use video file or set to None to use webcam
+    video_file = r"D:/IP19/PPE-KIT/Videos/ppe-1.mp4"
+    ppe_detection(video_file)

@@ -1,138 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Object Detection using YOLOv8</title>
-    <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YOLOv8 Detection</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
+    :root {
+      --primary-color: #667eea;
+      --secondary-color: #764ba2;
+      --dark-bg: #0f172a;
+      --card-bg: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
 
-        header {
-            width: 100%;
-            text-align: center;
-            padding: 20px 10px;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        header.top {
-            background-color: black;
-        }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4rem 1rem 2rem;
+    }
 
-        header.second {
-            background-color: blue;
-            margin-top: -10px;
-        }
+    h1 {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.8em;
-        }
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+    }
 
-        section.col-sm {
-            background-color: black;
-            border-radius: 35px;
-            overflow: hidden;
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
+    .card {
+      background: var(--card-bg);
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+      padding: 2rem;
+      max-width: 900px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
 
-        img {
-            width: 100%;
-            max-width: 900px;
-            border-radius: 35px;
-            object-fit: cover;
-        }
+    .card img {
+      width: 100%;
+      border-radius: 1rem;
+      object-fit: cover;
+    }
 
-        .upload-form {
-            margin-top: 20px;
-            text-align: center;
-        }
+    .highlight-box {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-left: 5px solid var(--primary-color);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      max-width: 900px;
+      width: 100%;
+    }
 
-        .upload-form form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .highlight-box h3 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+    }
 
-        .upload-form input[type="file"] {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #555;
-            border-radius: 5px;
-            background-color: #222;
-            color: white;
-            cursor: pointer;
-        }
+    .highlight-box p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
 
-        .upload-form button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            border: none;
-            background-color: green;
-            color: white;
-            font-size: 1em;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .upload-form {
+      text-align: center;
+    }
 
-        .upload-form button:hover {
-            background-color: #005500;
-        }
+    .upload-form label {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
 
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.5em;
-            }
+    .upload-form input[type="file"] {
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-primary);
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      width: 100%;
+      max-width: 400px;
+    }
 
-            img {
-                width: 100%;
-                height: auto;
-            }
-        }
-    </style>
+    .upload-form button {
+      padding: 0.75rem 2rem;
+      background: var(--gradient-primary);
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .upload-form button:hover {
+      transform: translateY(-3px);
+    }
+
+    .feature-section {
+      max-width: 1000px;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-box {
+      background: var(--card-bg);
+      border-radius: 1rem;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .feature-box h3 {
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .feature-box p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.2rem; }
+    }
+  </style>
 </head>
 <body>
-<header class="top">
-    <h1><strong>Object Detection using YOLOv8</strong></h1>
-</header>
-<header class="second">
-    <h1><strong>Output Video</strong></h1>
-</header>
 
-<section class="col-sm">
+  <h1>YOLOv8 Object Detection</h1>
+  <h2>Output Video</h2>
+
+  <div class="card">
     <img src="{{ url_for('video') }}" alt="Output Video">
-</section>
+  </div>
 
-<section class="upload-form">
+  <div class="highlight-box">
+    <h3><i class="fas fa-upload"></i> Upload your videos</h3>
+    <p>Select a video file from your device to process it through our YOLOv8 object detection model.</p>
+  </div>
+
+  <div class="card upload-form">
     <form method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <label for="file-upload">Upload Video:</label>
-        <input type="file" id="file-upload" name="file" class="custom-file-input" accept="video/*" title="Choose a video file to upload" placeholder="Choose file">
-        <button type="submit">Submit</button>
+      {{ form.hidden_tag() }}
+      <label for="file-upload">Upload Video:</label>
+      <input type="file" id="file-upload" name="file" accept="video/*" required>
+      <button type="submit"><i class="fas fa-upload"></i> Submit</button>
     </form>
-</section>
+  </div>
+
+  <!-- Feature Section -->
+  <div class="feature-section">
+    <div class="feature-box">
+      <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+      <h3>Real-time Detection</h3>
+      <p>Process videos instantly and detect objects on-the-fly using YOLOv8.</p>
+    </div>
+    <div class="feature-box">
+      <div class="feature-icon"><i class="fas fa-brain"></i></div>
+      <h3>AI-Powered</h3>
+      <p>Leverages deep learning to identify multiple objects with high precision.</p>
+    </div>
+    <div class="feature-box">
+      <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+      <h3>Secure & Efficient</h3>
+      <p>Ensures data privacy while providing fast processing and high accuracy.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 YOLOv8 Object Detection. All rights reserved.</p>
+  </footer>
 
 </body>
 </html>

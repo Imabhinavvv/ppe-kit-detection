@@ -10,7 +10,7 @@ def video_detection(path_x):
     frame_height=int(cap.get(4))
     #out=cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M', 'J', 'P','G'), 10, (frame_width, frame_height))
 
-    model=YOLO("E:\\downloads\\INFOSYS PROJECT\\PPE_detection_Kit-main\\ppe.pt")
+    model=YOLO("D:/IP19/PPE-KIT/best.pt")
     classNames = ['Hardhat', 'Mask', 'NO-Hardhat', 'NO-Mask', 'NO-Safety Vest', 'Person', 'Safety Cone',
                 'Safety Vest', 'machinery', 'vehicle']
     while True:
