@@ -1,7 +1,0 @@
-<<<<<<< HEAD
-opencv-python
-numpy
-=======
-opencv-python
-numpy
->>>>>>> 45e4b15 (Initial commit)
