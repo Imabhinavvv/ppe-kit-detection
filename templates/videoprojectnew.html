@@ -11,11 +11,20 @@
     :root {
       --primary-color: #667eea;
       --secondary-color: #764ba2;
+      --accent-color: #f093fb;
       --dark-bg: #0f172a;
       --card-bg: #1e293b;
       --text-primary: #f8fafc;
       --text-secondary: #cbd5e1;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
       --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
 
     * {
@@ -28,10 +37,64 @@
       font-family: 'Inter', sans-serif;
       background: var(--dark-bg);
       color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 4rem 1rem 2rem;
+      padding: 6rem 1rem 2rem;
+    }
+
+    /* Navigation */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
     }
 
     h1 {
@@ -169,12 +232,37 @@
     }
 
     @media (max-width: 768px) {
+      .nav-links {
+        gap: 1rem;
+      }
+
+      .nav-links a {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+
       h1 { font-size: 1.5rem; }
       h2 { font-size: 1.2rem; }
+      
+      body {
+        padding: 6rem 1rem 2rem;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">PPE Detection</div>
+      <ul class="nav-links">
+        <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="/FrontPage"><i class="fas fa-video"></i> Video/Image</a></li>
+        <li><a href="/webcam"><i class="fas fa-camera"></i> Live Webcam</a></li>
+      </ul>
+    </div>
+  </nav>
 
   <h1>YOLOv8 Object Detection</h1>
   <h2>Output Video</h2>
@@ -218,8 +306,20 @@
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2024 YOLOv8 Object Detection. All rights reserved.</p>
+    <p>&copy; 2025 YOLOv8 Object Detection. All rights reserved.</p>
   </footer>
+
+  <script>
+    // Add smooth scrolling and navbar background change on scroll
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 100) {
+        navbar.style.background = 'rgba(15, 23, 42, 0.98)';
+      } else {
+        navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+      }
+    });
+  </script>
 
 </body>
 </html>

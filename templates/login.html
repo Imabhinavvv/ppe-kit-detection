@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - YOLOv8 Object Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">YOLOv8 Object Detection</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="{{ url_for('home') }}" class="hover:underline">Home</a></li>
+                    <li><a href="{{ url_for('front') }}" class="hover:underline">Video/Image</a></li>
+                    <li><a href="{{ url_for('webcam') }}" class="hover:underline">Live Webcam</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-8 px-4">
+        <section class="bg-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
+            <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+            <form method="POST" action="{{ url_for('login') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700 font-bold mb-2">Username</label>
+                    <input type="text" id="username" name="username" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 font-bold mb-2">Password</label>
+                    <input type="password" id="password" name="password" class="w-full p-2 border rounded" required>
+                </div>
+                {% if error %}
+                    <p class="text-red-500 text-sm mb-4">{{ error }}</p>
+                {% endif %}
+                <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Login</button>
+            </form>
+            <p class="mt-4 text-center text-gray-600">Don't have an account? <a href="{{ url_for('signup') }}" class="text-blue-600 hover:underline">Sign up here</a>.</p>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center p-4 mt-8">
+        <p>© 2024 Object Detection using YOLOv8. All rights reserved.</p>
+    </footer>
+</body>
+</html>

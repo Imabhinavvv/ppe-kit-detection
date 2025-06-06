@@ -252,6 +252,46 @@
             transform: scale(1.02);
         }
 
+        /* Source Image Placeholder */
+        .source-image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .source-image-placeholder:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            opacity: 0.7;
+        }
+
+        .placeholder-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .placeholder-subtext {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            opacity: 0.8;
+            text-align: center;
+        }
+
         /* Status Indicator */
         .status-indicator {
             display: flex;
@@ -565,9 +605,9 @@
                 <i class="fas fa-eye"></i> YOLOv8 Detection
             </div>
             <ul class="nav-links">
-                <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#"><i class="fas fa-video"></i> Video</a></li>
-                <li><a href="#"><i class="fas fa-camera"></i> Live Feed</a></li>
+                <li><a href="/home"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/FrontPage"><i class="fas fa-video"></i> Video</a></li>
+                <li><a href="/webcam"><i class="fas fa-camera"></i> Live Feed</a></li>
             </ul>
         </div>
     </nav>
@@ -592,21 +632,31 @@
 
             <div class="video-container">
                 <div class="video-wrapper">
-                    <img id="webcamFeed" src="{{ url_for('webapp') }}" alt="Object Detection Output">
+                    <!-- Source Image Placeholder (shown when webcam is off) -->
+                    <div id="sourcePlaceholder" class="source-image-placeholder">
+                        <div class="placeholder-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <div class="placeholder-text">Ready for Object Detection</div>
+                        <div class="placeholder-subtext">Click "Start Live" to begin webcam feed processing</div>
+                    </div>
+                    
+                    <!-- Webcam Feed (shown when webcam is on) -->
+                    <img id="webcamFeed" class="hidden" src="" alt="Object Detection Output">
                 </div>
                 <div id="statusIndicator" class="status-indicator">
-                    <div class="loading-spinner"></div>
-                    <span>Processing Live Feed</span>
+                    <i class="fas fa-pause"></i>
+                    <span>Webcam Stopped</span>
                 </div>
                 
                 
                 <!-- Control Panel -->
                 <div class="control-panel">
-                    <button id="stopBtn" class="btn btn-danger">
+                    <button id="stopBtn" class="btn btn-danger hidden">
                         <i class="fas fa-stop"></i>
                         Stop Live
                     </button>
-                    <button id="startBtn" class="btn btn-success hidden">
+                    <button id="startBtn" class="btn btn-success">
                         <i class="fas fa-play"></i>
                         Start Live
                     </button>
@@ -616,10 +666,31 @@
                 <div class="instructions-panel">
                     <div class="instructions-title">
                         <i class="fas fa-info-circle"></i>
-                        <span id="instructionsTitle">Live Webcam Instructions</span>
+                        <span id="instructionsTitle">Getting Started</span>
                     </div>
                     <div class="instructions-content">
-                        <div id="liveInstructions">
+                        <div id="initialInstructions">
+                            <p>Welcome to the YOLOv8 Object Detection system:</p>
+                            <ul class="instructions-list">
+                                <li>
+                                    <i class="fas fa-play"></i>
+                                    <span>Click "Start Live" to activate your webcam and begin detection</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Ensure your browser allows camera access when prompted</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>Position objects in good lighting for optimal detection results</span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-eye"></i>
+                                    <span>The AI will identify and highlight detected objects in real-time</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="liveInstructions" class="hidden">
                             <p>The webcam is currently active and processing live video feed:</p>
                             <ul class="instructions-list">
                                 <li>
@@ -730,121 +801,70 @@
         <p>&copy; 2024 Object Detection Project. All rights reserved. | Powered by YOLOv8 Technology</p>
     </footer>
 
+    
     <script>
-        // Add smooth scrolling and navbar background change on scroll
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(15, 23, 42, 0.98)';
-            } else {
-                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
-            }
-        });
-
-        // Add animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe all feature cards and sections for scroll animations
-        document.querySelectorAll('.feature-card, .video-container, .section-title').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.6s ease-out';
-            observer.observe(el);
-        });
-
         // Webcam Control Functionality
-        let isWebcamActive = true;
-        let webcamInterval;
+        let isWebcamActive = false;
 
         const webcamFeed = document.getElementById('webcamFeed');
+        const sourcePlaceholder = document.getElementById('sourcePlaceholder');
         const statusIndicator = document.getElementById('statusIndicator');
         const stopBtn = document.getElementById('stopBtn');
         const startBtn = document.getElementById('startBtn');
         const instructionsTitle = document.getElementById('instructionsTitle');
+        const initialInstructions = document.getElementById('initialInstructions');
         const liveInstructions = document.getElementById('liveInstructions');
         const offInstructions = document.getElementById('offInstructions');
 
-        // Function to update status indicator
         function updateStatus(isActive) {
             if (isActive) {
+                // Show webcam feed, hide placeholder
+                webcamFeed.classList.remove('hidden');
+                sourcePlaceholder.classList.add('hidden');
+                
                 statusIndicator.innerHTML = '<div class="loading-spinner"></div><span>Processing Live Feed</span>';
                 statusIndicator.style.background = 'rgba(16, 185, 129, 0.1)';
                 statusIndicator.style.borderColor = 'var(--success-color)';
                 statusIndicator.style.color = 'var(--success-color)';
                 instructionsTitle.textContent = 'Live Webcam Instructions';
+                initialInstructions.classList.add('hidden');
                 liveInstructions.classList.remove('hidden');
                 offInstructions.classList.add('hidden');
             } else {
+                // Show placeholder, hide webcam feed
+                webcamFeed.classList.add('hidden');
+                sourcePlaceholder.classList.remove('hidden');
+                
                 statusIndicator.innerHTML = '<i class="fas fa-pause"></i><span>Webcam Stopped</span>';
                 statusIndicator.style.background = 'rgba(239, 68, 68, 0.1)';
                 statusIndicator.style.borderColor = 'var(--danger-color)';
                 statusIndicator.style.color = 'var(--danger-color)';
-                instructionsTitle.textContent = 'Webcam Off Instructions';
+                instructionsTitle.textContent = 'Getting Started';
+                initialInstructions.classList.remove('hidden');
                 liveInstructions.classList.add('hidden');
-                offInstructions.classList.remove('hidden');
+                offInstructions.classList.add('hidden');
             }
         }
 
-        // Stop webcam functionality
         stopBtn.addEventListener('click', () => {
             isWebcamActive = false;
             webcamFeed.src = '';
             stopBtn.classList.add('hidden');
             startBtn.classList.remove('hidden');
             updateStatus(false);
-            
-            // Add visual feedback
-            stopBtn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                stopBtn.style.transform = 'scale(1)';
-            }, 150);
         });
 
-        // Start webcam functionality
         startBtn.addEventListener('click', () => {
             isWebcamActive = true;
             webcamFeed.src = "{{ url_for('webapp') }}";
             startBtn.classList.add('hidden');
             stopBtn.classList.remove('hidden');
             updateStatus(true);
-            
-            // Add visual feedback
-            startBtn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                startBtn.style.transform = 'scale(1)';
-            }, 150);
         });
 
-        // Initial page load handling
+        // Initialize the page with placeholder shown
         document.addEventListener('DOMContentLoaded', () => {
-            // Simulate loading states
-            webcamFeed.addEventListener('load', () => {
-                if (isWebcamActive) {
-                    updateStatus(true);
-                }
-            });
-
-            webcamFeed.addEventListener('error', () => {
-                statusIndicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Connection Error</span>';
-                statusIndicator.style.background = 'rgba(239, 68, 68, 0.1)';
-                statusIndicator.style.borderColor = 'var(--danger-color)';
-                statusIndicator.style.color = 'var(--danger-color)';
-            });
-
-            // Initialize with live state
-            updateStatus(true);
+            updateStatus(false);
         });
     </script>
 </body>
