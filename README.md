@@ -1,4 +1,4 @@
-# 🛡️ PPE Kit Detection Using YOLOv3
+# 🛡️ PPE Kit Detection Using YOLOv8
 
 This project aims to detect Personal Protective Equipment (PPE) such as helmets, vests, and masks in real-time using the YOLOv3 (You Only Look Once) object detection model. It is built using Python, OpenCV, Flask, and pre-trained YOLO weights.
 
